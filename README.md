@@ -2,11 +2,11 @@
 
 A multi-agent AI system that generates, refines, and validates WPF XAML markup from natural language descriptions — with live PNG preview via a companion WPF renderer process.
 
+[![.NET Build](https://github.com/sajjadreihani/XamlDesignerAgent/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/sajjadreihani/XamlDesignerAgent/actions)
 ![Pipeline](https://img.shields.io/badge/Agents-3%20stage%20pipeline-blue)
 ![.NET](https://img.shields.io/badge/.NET-10%2B-purple)
 ![Blazor](https://img.shields.io/badge/UI-Blazor%20Server-512BD4)
 ![OpenRouter](https://img.shields.io/badge/LLM-OpenRouter%20free%20tier-orange)
-![CI](https://github.com/sajjadreihani/XamlDesignerAgent/actions/workflows/dotnet-build.yml/badge.svg)
 
 ---
 
