@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="XamlDesignerAgent.Tests/XamlDesignerAgent.Tests.csproj" />
+  <Project Path="XamlDesignerAgent/XamlDesignerAgent.csproj" />
+  <Project Path="XamlRenderer/XamlRenderer.csproj" />
+</Solution>

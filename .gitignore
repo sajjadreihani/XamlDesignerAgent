@@ -1,0 +1,66 @@
+# Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+publish/
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/packages/*
+!**/packages/build/
+
+# Secret files
+secrets.json
+appsettings.*.json
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Visual Studio cache
+*.cache
+
+# Rider caches
+.idea/
+*.iml
+
+# JetBrains Rider
+.idea/
+
+# Logs
+*.log
+
+# User-specific files
+*.rsuser
+*.userprefs
+
+# Docker
+docker-compose.override.yml
+
+# Visual Studio publish
+*.Publish.xml
+
+# Azure Web App publish settings
+Properties/PublishProfiles/
+
+# dotnet user-secrets
+.vscode/.env
+
+# Ignore compiled Blazor WebAssembly files
+wwwroot/_framework
+
+# End of file
+

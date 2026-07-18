@@ -1,0 +1,100 @@
+﻿@page "/"
+@using XamlDesignerAgent.AI.Models
+@using XamlDesignerAgent.AI.Interfaces
+@using XamlDesignerAgent.Components.Components
+@inject IAgentsOrchestrator orchestrator
+@rendermode InteractiveServer
+<PageTitle>Home</PageTitle>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;
+            height:95vh; padding:16px; box-sizing:border-box;">
+
+    <!-- Left: prompt + XAML editor -->
+    <div style="display:flex; flex-direction:column; gap:10px;">
+
+        <textarea @bind="_prompt"
+                  placeholder="Describe your UI..."
+                  style="height:90px; padding:8px; resize:none; font-size:14px;
+                         border-radius:6px; border:1px solid #444;
+                         background:#252526; color:#d4d4d4;" />
+
+        <div style="display:flex; gap:8px;">
+            <button @onclick="GenerateAsync" disabled="@_busy"
+                    style="flex:1; padding:8px; background:#0e639c; color:white;
+                           border:none; border-radius:6px; cursor:pointer;">
+                @(_busy ? "⏳ Generating..." : "✨ Generate XAML")
+            </button>
+            <button @onclick="ReRender"
+                    disabled="@string.IsNullOrEmpty(_xaml)"
+                    style="padding:8px 16px; background:#2e7d32; color:white;
+                           border:none; border-radius:6px; cursor:pointer;">
+                ▶ Preview
+            </button>
+        </div>
+
+        <textarea @bind="_xaml"
+                  placeholder="Generated XAML..."
+                  style="flex:1; font-family:monospace; font-size:12px;
+                         padding:8px; border-radius:6px; border:1px solid #444;
+                         background:#1e1e1e; color:#d4d4d4; resize:none;" />
+    </div>
+
+    <!-- Right: PNG preview -->
+    <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="font-size:12px; color:#888;">WPF Preview (PNG)</div>
+        @if (!string.IsNullOrEmpty(_pipelineError))
+        {
+            <div style="background:#f44; color:white; padding:12px; border-radius:6px; font-size:13px;">
+                ❌ <strong>Pipeline Error:</strong> @_pipelineError
+            </div>
+        }
+        <XamlRenderer @ref="_xamlRenderer" Xaml="@_previewXaml" />
+    </div>
+
+    <div style="grid-column:1 / -1; min-height:0; max-height: 25vh;">
+        <AgentLogs />
+    </div>
+</div>
+
+@code {
+    private string  _prompt = "I want to create a simple login page";
+    private XamlRenderer? _xamlRenderer;
+    private string  _xaml = "";
+    private string? _previewXaml;
+    private bool    _busy;
+    private string? _pipelineError;
+
+    private async Task GenerateAsync()
+    {
+        _busy = true;
+        _pipelineError = null;
+        StateHasChanged();
+
+        try
+        {
+            var result = await orchestrator.RunAsync(new AgentInput(_prompt, _xaml));
+            _xaml = result.FinalCode ?? "";
+            _previewXaml = _xaml;
+
+            if (!result.Success)
+            {
+                _pipelineError = result.FinalVerdict ?? "Pipeline completed with unresolved issues.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _pipelineError = $"{ex.GetType().Name}: {ex.Message}";
+        }
+        finally
+        {
+            _busy = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task ReRender()
+    {
+        _previewXaml = _xaml; // auto-preview after generation
+        await _xamlRenderer?.Render(_xaml);
+    }
+}

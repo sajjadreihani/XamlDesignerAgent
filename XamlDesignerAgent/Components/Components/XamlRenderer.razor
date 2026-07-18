@@ -1,0 +1,60 @@
+﻿@using XamlDesignerAgent.Renderer.Interface
+@inject IXamlRenderer RenderService
+
+<div style="width:100%; border:1px solid #333; border-radius:8px; overflow:hidden; min-height:200px;
+    background:#1e1e1e; display:flex; align-items:center; justify-content:center;">
+    @if (_loading)
+    {
+        <div style="color:#888; font-size:14px">⏳ Rendering...</div>
+    }
+    else if (!string.IsNullOrEmpty(_error))
+    {
+        <div style="color:#f44; padding:16px; font-size:13px; font-family:monospace; white-space:pre-wrap">
+            ❌ @_error
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(_imageBase64))
+    {
+        <img src="data:image/png;base64,@_imageBase64"
+             alt="XAML Preview"
+             style="width:100%; display:block;" />
+    }
+    else
+    {
+        <div style="color:#555; font-size:14px">Preview will appear here</div>
+    }
+</div>
+
+@code {
+    private string? _currentXaml;
+    private string? _imageBase64;
+    private string? _error;
+    private bool _loading;
+
+    [Parameter] public string? Xaml { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Xaml) || Xaml == _currentXaml)
+            return;
+
+        await Render(Xaml);
+    }
+
+    public async Task Render(string Xaml)
+    {
+        _currentXaml = Xaml;
+        _loading = true;
+        _error = null;
+        _imageBase64 = null;
+        StateHasChanged();
+
+        var result = await RenderService.RenderAsync(Xaml);
+
+        _loading = false;
+        _imageBase64 = result.ImageBase64;
+        _error = result.Success ? null : result.Error;
+        StateHasChanged();
+
+    }
+}

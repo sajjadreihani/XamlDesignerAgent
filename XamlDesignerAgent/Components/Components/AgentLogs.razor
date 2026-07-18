@@ -1,0 +1,108 @@
+﻿@using XamlDesignerAgent.AI.Interfaces
+@using XamlDesignerAgent.AI.Models
+@implements IDisposable
+@inject IAgentLog LogService
+
+<div style="display:flex; flex-direction:column; height:100%;">
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-size:12px; color:#888; font-family:monospace;">Agent Logs</span>
+        <button @onclick="Clear"
+                style="font-size:11px; padding:2px 8px; background:transparent;
+            border:1px solid #444; color:#888; border-radius:4px; cursor:pointer;">
+            Clear
+        </button>
+    </div>
+
+    <div @ref="_scrollRef"
+         style="flex:1; overflow-y:auto; font-family:monospace; font-size:12px;
+        background:#0d0d0d; border:1px solid #2a2a2a; border-radius:6px;
+        padding:8px; display:flex; flex-direction:column; gap:2px;">
+
+        @if (!_entries.Any())
+        {
+            <span style="color:#444;">Waiting for agent activity...</span>
+        }
+
+        @foreach (var entry in _entries)
+        {
+            <div style="display:flex; gap:8px; align-items:baseline;">
+                <span style="color:#444; flex-shrink:0;">
+                    @entry.Time.ToString("HH:mm:ss")
+                </span>
+                <span style="@AgentColor(entry.Agent); flex-shrink:0; min-width:100px;">
+                    [@entry.Agent]
+                </span>
+                <span style="@LevelColor(entry.Level);">
+                    @entry.Message
+                </span>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<AgentLogEntry> _entries = [];
+    private IDisposable? _subscription;
+    private ElementReference _scrollRef;
+
+    protected override void OnInitialized()
+    {
+        // Load history first
+        _entries = [.. LogService.History];
+
+        // Subscribe to new entries
+        _subscription = LogService.Subscribe(entry =>
+        {
+            InvokeAsync(async () =>
+            {
+                _entries.Add(entry);
+                StateHasChanged();
+                await ScrollToBottomAsync();
+            });
+        });
+    }
+
+    private async Task ScrollToBottomAsync()
+    {
+        try
+        {
+            // Small delay to let the DOM update
+            await Task.Delay(50);
+            // Scroll via JS
+            await JS.InvokeVoidAsync("scrollToBottom", _scrollRef);
+        }
+        catch { }
+    }
+
+    private void Clear()
+    {
+        LogService.Clear();
+        _entries.Clear();
+        StateHasChanged();
+    }
+
+    private static string AgentColor(string agent) => agent switch
+    {
+        "Orchestrator" => "color:#569CD6;",
+        "Planner" => "color:#C586C0;",
+        "Builder" => "color:#4EC9B0;",
+        "Verifier" => "color:#CE9178;",
+        "Builder:Tool" => "color:#DCDCAA;",
+        "Planner:Tool" => "color:#DCDCAA;",
+        _ => "color:#888;"
+    };
+
+    private static string LevelColor(string level) => level switch
+    {
+        "success" => "color:#6A9955;",
+        "error" => "color:#F44747;",
+        "warning" => "color:#CCA700;",
+        "tool" => "color:#DCDCAA;",
+        _ => "color:#D4D4D4;"
+    };
+
+    public void Dispose() => _subscription?.Dispose();
+
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+}

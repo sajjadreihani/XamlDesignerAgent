@@ -1,0 +1,36 @@
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager Navigation
+@inject ILogger<ErrorFallback> Logger
+@inject IWebHostEnvironment Env
+
+<div class="alert alert-danger" role="alert">
+    <h3>Something went wrong</h3>
+    <p>An unexpected error occurred while loading this page. You can try reloading or check the application logs for details.</p>
+    @if (Env.IsDevelopment())
+    {
+        <details>
+            <summary>Exception details</summary>
+            <pre>@Error?.ToString()</pre>
+        </details>
+    }
+    <div class="mt-2">
+        <button class="btn btn-primary" @onclick="Reload">Reload</button>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public Exception? Error { get; set; }
+
+    private void Reload()
+    {
+        try
+        {
+            Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Reload failed");
+        }
+    }
+}
