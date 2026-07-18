@@ -197,7 +197,7 @@ Change the layout to a dark theme with a sidebar navigation
 
 ## Configuration
 
-Configuration is loaded from appsettings.json, environment variables, or dotnet user-secrets. See API_CONFIGURATION.md and the included `.env.example` for recommended setup and safety guidance.
+Configuration is loaded from appsettings.json, environment variables, or dotnet user-secrets. The installation guide above covers initial setup.
 
 Key configuration areas:
 
@@ -225,7 +225,7 @@ Example (appsettings.json):
 }
 ```
 
-> Never commit real API keys. Use `dotnet user-secrets` or environment variables. See `API_CONFIGURATION.md` and `.env.example` for examples.
+> Never commit real API keys. Use `dotnet user-secrets` or environment variables for production. See the Installation section for setup examples.
 
 ### Recommended free models on OpenRouter
 
