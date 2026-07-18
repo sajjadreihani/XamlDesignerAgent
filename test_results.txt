@@ -1,8 +1,0 @@
-  Determining projects to restore...
-  All projects are up-to-date for restore.
-  XamlDesignerAgent -> W:\Work\Agents\XamlDesignerAgent\XamlDesignerAgent\bin\Debug\net10.0\XamlDesignerAgent.dll
-  XamlDesignerAgent.Tests -> W:\Work\Agents\XamlDesignerAgent\XamlDesignerAgent.Tests\bin\Debug\net10.0\XamlDesignerAgent.Tests.dll
-Test run for W:\Work\Agents\XamlDesignerAgent\XamlDesignerAgent.Tests\bin\Debug\net10.0\XamlDesignerAgent.Tests.dll (.NETCoreApp,Version=v10.0)
-A total of 1 test files matched the specified pattern.
-
-Passed!  - Failed:     0, Passed:    22, Skipped:     0, Total:    22, Duration: 98 ms - XamlDesignerAgent.Tests.dll (net10.0)

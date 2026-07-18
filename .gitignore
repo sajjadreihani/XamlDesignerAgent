@@ -42,6 +42,8 @@ Thumbs.db
 
 # Logs
 *.log
+*.trx
+test_results.txt
 
 # User-specific files
 *.rsuser
