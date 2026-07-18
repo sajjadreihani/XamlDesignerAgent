@@ -123,7 +123,7 @@ XamlDesignerAgent.sln
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/XamlDesignerAgent.git
+git clone https://github.com/sajjadreihani/XamlDesignerAgent.git
 cd XamlDesignerAgent
 ```
 
